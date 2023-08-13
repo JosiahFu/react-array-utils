@@ -1,6 +1,6 @@
 {
   "name": "@tater-archives/react-array-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Utilities for handling state arrays in React",
   "type": "module",
   "main": "dist/cjs/index.js",
@@ -37,6 +37,10 @@
   "dependencies": {
     "react": "^18.2.0"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "eslintConfig": {
     "extends": [
       "react-app"
