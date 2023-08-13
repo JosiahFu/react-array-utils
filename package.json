@@ -5,6 +5,7 @@
   "type": "module",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c",
@@ -31,10 +32,11 @@
     "eslint-config-react-app": "^7.0.1",
     "rollup": "^3.28.0",
     "rollup-plugin-dts": "^5.3.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "tslib": "^2.6.1",
     "typescript": "^5.1.6"
   },
-  "dependencies": {
+  "peerDependencies": {
     "react": "^18.2.0"
   },
   "files": [
@@ -46,7 +48,8 @@
       "react-app"
     ],
     "ignorePatterns": [
-      "*.config.js"
+      "*.config.js",
+      "dist"
     ]
   }
 }

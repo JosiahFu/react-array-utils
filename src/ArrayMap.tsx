@@ -76,11 +76,20 @@ function ArrayMap<T>({
 }) {
     const { set, remove, insert } = useArrayState(array, setArray);
 
-    return array.map((e, i) => (
-        <MapChild value={e} index={i} set={set} remove={remove} insert={insert}>
-            {children}
-        </MapChild>
-    ));
+    return (
+        <>
+            {array.map((e, i) => (
+                <MapChild
+                    value={e}
+                    index={i}
+                    set={set}
+                    remove={remove}
+                    insert={insert}>
+                    {children}
+                </MapChild>
+            ))}
+        </>
+    );
 }
 
 export { ArrayMap };
