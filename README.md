@@ -10,7 +10,7 @@ Creates functions to add, remove, set, and insert to the array.
 
 ```tsx
 const [state, setState] = useState(['milk', 'eggs', 'pipes']);
-const {add, remove, set, insert} = useArrayState(state, setState);
+const { add, remove, set, insert } = useArrayState(state, setState);
 
 add('Cat'); // ['milk', 'eggs', 'pipes', 'Cat']
 remove(2); // ['milk', 'eggs', 'Cat']
@@ -22,12 +22,13 @@ With a specified name:
 
 ```tsx
 const [shopList, setShopList] = useState(['milk', 'eggs', 'pipes']);
-const {addShopItem, removeShopItem, setShopItem, insertShopItem} = useArrayState(shopList, setShopList, 'shopItem');
+const { addShopItem, removeShopItem, setShopItem, insertShopItem } =
+    useArrayState(shopList, setShopList, 'shopItem');
 
-addShopItem('Cat'); // ['milk', 'eggs', 'pipes', 'Cat']
-removeShopItem(2); // ['milk', 'eggs', 'Cat']
-setShopItem(1, 'dozen eggs'); // ['milk', 'dozen eggs', 'Cat']
-insertShopItem(2, 'Things'); // ['milk, 'dozen eggs', 'Things']
+addShopItem('Cat');
+removeShopItem(2);
+setShopItem(1, 'dozen eggs');
+insertShopItem(2, 'Things');
 ```
 
 ## `ArrayMap`
@@ -40,10 +41,26 @@ A component to map each item of an array to content, which recieves several meth
 const [shopList, setShopList] = useState(['milk', 'eggs', 'pipes']);
 
 <ArrayMap array={shopList} setArray={setShopList}>
-    {(value, {set, remove, insertBefore, insertAfter}) => <div>
-        {value}
-        <button onClick={() => set('cat')}>Change to cat</button>
-        <button onClick={remove}>X</button>
-    </div>}
+    {(value, { set, remove }) => (
+        <div>
+            {value}
+            <button onClick={() => set('cat')}>Change to cat</button>
+            <button onClick={remove}>X</button>
+        </div>
+    )}
+</ArrayMap>;
+```
+
+```tsx
+const [shopList, setShopList] = useState(['milk', 'eggs', 'pipes']);
+
+<ArrayMap array={shopList} setArray={setShopList}>
+    {(value, actions) => <>
+        <div>
+            <input value={value} onChange={event => actions.set(event.target.value)} />
+            <button onClick={actions.remove}>X</button>
+        </div>
+        <button onClick={() => actions.insertAfter('')}>+</button>
+    </>}
 </ArrayMap>
 ```
