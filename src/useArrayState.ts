@@ -7,7 +7,22 @@ interface ArrayOperations<T> {
     insert: (index: number, value: T) => void
 }
 
+/**
+ * A hook that provides utility functions for managing an array state.
+ *
+ * @param array - The initial array state.
+ * @param setArray - The state setter function.
+ * @returns An object containing array manipulation functions.
+ */
 function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>): ArrayOperations<T>
+/**
+ * A hook that provides utility functions for managing an array state with named operations.
+ *
+ * @param array - The initial array state.
+ * @param setArray - The state setter function.
+ * @param name - The name to create named operations.
+ * @returns An object containing named array manipulation functions.
+ */
 function useArrayState<T, N extends string>(array: T[], setArray: Dispatch<SetStateAction<T[]>>, name: N): {
     [key in keyof ArrayOperations<T> as `${key}${Capitalize<N>}`]: ArrayOperations<T>[key]
 };

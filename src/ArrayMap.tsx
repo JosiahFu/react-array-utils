@@ -1,6 +1,12 @@
 import React, { Dispatch, ReactNode, SetStateAction, useCallback } from 'react';
 import { useArrayState } from './useArrayState';
 
+/**
+ * Component that maps over an array and renders children components with array manipulation actions.
+ *
+ * @param props - The component props.
+ * @returns A React element.
+ */
 function MapChild<T>({
     value,
     index,
@@ -57,6 +63,15 @@ function MapChild<T>({
     });
 }
 
+/**
+ * Component that maps over an array and renders children components with array manipulation actions.
+ *
+ * @param props - The component props.
+ * @param props.array - The array to be mapped over.
+ * @param props.setArray - The state setter function for the array.
+ * @param props.children - Render function that receives the value and array manipulation actions as arguments.
+ * @returns A React element.
+ */
 function ArrayMap<T>({
     array,
     setArray,
