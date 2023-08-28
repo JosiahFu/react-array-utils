@@ -27,6 +27,8 @@ function useArrayState<T, N extends string>(array: T[], setArray: Dispatch<SetSt
     [key in keyof ArrayOperations<T> as `${key}${Capitalize<N>}`]: ArrayOperations<T>[key]
 };
 function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>, name?: string) {
+    const capName = name ? name[0].toUpperCase() + name.substring(1) : undefined;
+
     const arrayRef = useRef(array);
 
     useEffect(() => {
@@ -49,11 +51,11 @@ function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>, n
         setArray([...arrayRef.current.slice(0, index), value, ...arrayRef.current.slice(index)]);
     }, [setArray]);
 
-    return name ? {
-        ['add' + name]: add,
-        ['remove' + name]: remove,
-        ['set' + name]: set,
-        ['insert' + name]: insert
+    return capName ? {
+        ['add' + capName]: add,
+        ['remove' + capName]: remove,
+        ['set' + capName]: set,
+        ['insert' + capName]: insert
     } : { add, remove, set, insert };
 }
 
