@@ -1,12 +1,6 @@
 import React, { Dispatch, ReactNode, SetStateAction, useCallback } from 'react';
 import { ArrayOperations, useArrayState } from './useArrayState';
 
-/**
- * Component that maps over an array and renders children components with array manipulation actions.
- *
- * @param props - The component props.
- * @returns A React element.
- */
 function MapChild<T>({
     value,
     index,

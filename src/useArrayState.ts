@@ -14,21 +14,7 @@ interface ArrayOperations<T> {
  * @param setArray - The state setter function.
  * @returns An object containing array manipulation functions.
  */
-function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>): ArrayOperations<T>
-/**
- * A hook that provides utility functions for managing an array state with named operations.
- *
- * @param array - The initial array state.
- * @param setArray - The state setter function.
- * @param name - The name to create named operations.
- * @returns An object containing named array manipulation functions.
- */
-function useArrayState<T, N extends string>(array: T[], setArray: Dispatch<SetStateAction<T[]>>, name: N): {
-    [key in keyof ArrayOperations<T> as `${key}${Capitalize<N>}`]: ArrayOperations<T>[key]
-};
-function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>, name?: string) {
-    const capName = name ? name[0].toUpperCase() + name.substring(1) : undefined;
-
+function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>): ArrayOperations<T> {
     const arrayRef = useRef(array);
 
     useEffect(() => {
@@ -52,15 +38,10 @@ function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>, n
     }, [setArray]);
 
     const returnedItems = useMemo(() => (
-        capName ? {
-        ['add' + capName]: add,
-        ['remove' + capName]: remove,
-        ['set' + capName]: set,
-        ['insert' + capName]: insert
-        } : { add, remove, set, insert }
-    ), [add, capName, insert, remove, set]);
+        { add, remove, set, insert }
+    ), [add, insert, remove, set]);
 
-    return returnedItems
+    return returnedItems;
 }
 
 export { useArrayState, ArrayOperations };
