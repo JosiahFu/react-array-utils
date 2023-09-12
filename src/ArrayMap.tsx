@@ -1,5 +1,5 @@
 import React, { Dispatch, ReactNode, SetStateAction, useCallback } from 'react';
-import { useArrayState } from './useArrayState';
+import { ArrayOperations, useArrayState } from './useArrayState';
 
 /**
  * Component that maps over an array and renders children components with array manipulation actions.
@@ -10,16 +10,12 @@ import { useArrayState } from './useArrayState';
 function MapChild<T>({
     value,
     index,
-    set,
-    remove,
-    insert,
+    actions,
     children,
 }: {
     value: T;
     index: number;
-    set: (index: number, value: T) => void;
-    remove: (index: number) => void;
-    insert: (index: number, value: T) => void;
+    actions: ArrayOperations<T>;
     children: (
         value: T,
         actions: {
@@ -27,9 +23,13 @@ function MapChild<T>({
             remove: () => void;
             insertBefore: (value: T) => void;
             insertAfter: (value: T) => void;
-        }
+        },
+        index: number,
+        arrayActions: ArrayOperations<T>
     ) => ReactNode;
 }) {
+    const { set, remove, insert } = actions;
+
     const handleSet = useCallback(
         (value: T) => {
             set(index, value);
@@ -55,12 +55,17 @@ function MapChild<T>({
         [index, insert]
     );
 
-    return children(value, {
-        set: handleSet,
-        remove: handleRemove,
-        insertBefore: handleInsertBefore,
-        insertAfter: handleInsertAfter,
-    });
+    return children(
+        value,
+        {
+            set: handleSet,
+            remove: handleRemove,
+            insertBefore: handleInsertBefore,
+            insertAfter: handleInsertAfter,
+        },
+        index,
+        actions
+    );
 }
 
 /**
@@ -89,17 +94,12 @@ function ArrayMap<T>({
         }
     ) => ReactNode;
 }) {
-    const { set, remove, insert } = useArrayState(array, setArray);
+    const actions = useArrayState(array, setArray);
 
     return (
         <>
             {array.map((e, i) => (
-                <MapChild
-                    value={e}
-                    index={i}
-                    set={set}
-                    remove={remove}
-                    insert={insert}>
+                <MapChild value={e} index={i} actions={actions}>
                     {children}
                 </MapChild>
             ))}

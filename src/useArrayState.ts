@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from 'react';
 
 interface ArrayOperations<T> {
     add: (value: T) => void,
@@ -51,12 +51,16 @@ function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>, n
         setArray([...arrayRef.current.slice(0, index), value, ...arrayRef.current.slice(index)]);
     }, [setArray]);
 
-    return capName ? {
+    const returnedItems = useMemo(() => (
+        capName ? {
         ['add' + capName]: add,
         ['remove' + capName]: remove,
         ['set' + capName]: set,
         ['insert' + capName]: insert
-    } : { add, remove, set, insert };
+        } : { add, remove, set, insert }
+    ), [add, capName, insert, remove, set]);
+
+    return returnedItems
 }
 
-export { useArrayState };
+export { useArrayState, ArrayOperations };
