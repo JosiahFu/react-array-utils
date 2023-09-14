@@ -93,7 +93,7 @@ function ArrayMap<T>({
     return (
         <>
             {array.map((e, i) => (
-                <MapChild value={e} index={i} actions={actions}>
+                <MapChild value={e} index={i} actions={actions} key={i}>
                     {children}
                 </MapChild>
             ))}
