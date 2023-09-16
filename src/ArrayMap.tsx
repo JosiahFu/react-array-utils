@@ -1,6 +1,13 @@
 import React, { Dispatch, ReactNode, SetStateAction, useCallback } from 'react';
 import { ArrayOperations, useArrayState } from './useArrayState';
 
+interface ChildActions<T> {
+    set: (value: T) => void;
+    remove: () => void;
+    insertBefore: (value: T) => void;
+    insertAfter: (value: T) => void;
+}
+
 function MapChild<T>({
     value,
     index,
@@ -12,12 +19,7 @@ function MapChild<T>({
     actions: ArrayOperations<T>;
     children: (
         value: T,
-        actions: {
-            set: (value: T) => void;
-            remove: () => void;
-            insertBefore: (value: T) => void;
-            insertAfter: (value: T) => void;
-        },
+        actions: ChildActions<T>,
         index: number,
         arrayActions: ArrayOperations<T>
     ) => ReactNode;
@@ -62,6 +64,21 @@ function MapChild<T>({
     );
 }
 
+interface CommonMapProps<T> {
+    array: T[];
+    setArray: Dispatch<SetStateAction<T[]>>;
+    children: (
+        value: T,
+        actions: ChildActions<T>,
+        index: number,
+        arrayActions: ArrayOperations<T>
+    ) => ReactNode;
+}
+
+type PropsOfType<O extends object, T> = {
+    [K in keyof O]: O[K] extends T ? K : never;
+}[keyof O];
+
 /**
  * Component that maps over an array and renders children components with array manipulation actions.
  *
@@ -75,25 +92,69 @@ function ArrayMap<T>({
     array,
     setArray,
     children,
-}: {
-    array: T[];
-    setArray: Dispatch<SetStateAction<T[]>>;
-    children: (
-        value: T,
-        actions: {
-            set: (value: T) => void;
-            remove: () => void;
-            insertBefore: (value: T) => void;
-            insertAfter: (value: T) => void;
-        }
-    ) => ReactNode;
+}: CommonMapProps<T>): ReactNode;
+/**
+ * Component that maps over an array and renders children components with array manipulation actions.
+ *
+ * @param props - The component props.
+ * @param props.array - The array to be mapped over.
+ * @param props.setArray - The state setter function for the array.
+ * @param props.keys - The keys for the array items
+ * @param props.children - Render function that receives the value and array manipulation actions as arguments.
+ * @returns A React element.
+ */
+function ArrayMap<T>({
+    array,
+    setArray,
+    keys,
+    children,
+}: CommonMapProps<T> & {
+    keys: (string | number)[];
+}): ReactNode;
+/**
+ * Component that maps over an array and renders children components with array manipulation actions.
+ *
+ * @param props - The component props.
+ * @param props.array - The array to be mapped over.
+ * @param props.setArray - The state setter function for the array.
+ * @param props.keyProp - The name of the object prop that should be used for array keys
+ * @param props.children - Render function that receives the value and array manipulation actions as arguments.
+ * @returns A React element.
+ */
+function ArrayMap<T extends object, K extends PropsOfType<T, string | number>>({
+    array,
+    setArray,
+    keyProp,
+    children,
+}: CommonMapProps<T> & {
+    keyProp: K;
+}): ReactNode;
+function ArrayMap<
+    T,
+    K extends T extends object ? PropsOfType<T, string | number> : never
+>({
+    array,
+    setArray,
+    children,
+    keys,
+    keyProp,
+}: CommonMapProps<T> & {
+    keys?: (string | number)[];
+    keyProp?: K;
 }) {
     const actions = useArrayState(array, setArray);
+    const arrayKeys = keys ??
+        (keyProp && (array.map(e => e[keyProp]) as (string | number)[])) ??
+        [...array.keys()];
 
     return (
         <>
             {array.map((e, i) => (
-                <MapChild value={e} index={i} actions={actions} key={i}>
+                <MapChild
+                    value={e}
+                    index={i}
+                    actions={actions}
+                    key={arrayKeys[i]}>
                     {children}
                 </MapChild>
             ))}
