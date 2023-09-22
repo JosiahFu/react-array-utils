@@ -6,6 +6,7 @@ interface ChildActions<T> {
     remove: () => void;
     insertBefore: (value: T) => void;
     insertAfter: (value: T) => void;
+    replace: (...values: T[]) => void;
 }
 
 function MapChild<T>({
@@ -24,7 +25,7 @@ function MapChild<T>({
         arrayActions: ArrayOperations<T>
     ) => ReactNode;
 }) {
-    const { set, remove, insert } = actions;
+    const { set, remove, insert, splice } = actions;
 
     const handleSet = useCallback(
         (value: T) => {
@@ -51,6 +52,13 @@ function MapChild<T>({
         [index, insert]
     );
 
+    const handleReplace = useCallback(
+        (...values: T[]) => {
+            splice(index, 0, values);
+        },
+        [index, splice]
+    );
+
     return children(
         value,
         {
@@ -58,6 +66,7 @@ function MapChild<T>({
             remove: handleRemove,
             insertBefore: handleInsertBefore,
             insertAfter: handleInsertAfter,
+            replace: handleReplace,
         },
         index,
         actions
