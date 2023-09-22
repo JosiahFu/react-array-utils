@@ -54,7 +54,7 @@ function MapChild<T>({
 
     const handleReplace = useCallback(
         (...values: T[]) => {
-            splice(index, 0, values);
+            splice(index, 1, values);
         },
         [index, splice]
     );
