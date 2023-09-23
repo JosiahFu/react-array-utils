@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useMemo, useRef } from 'react';
+import { Dispatch, SetStateAction, useMemo, useRef } from 'react';
 
 interface ArrayOperations<T> {
     add: (value: T) => void,
@@ -17,34 +17,27 @@ interface ArrayOperations<T> {
  */
 function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>): ArrayOperations<T> {
     const arrayRef = useRef(array);
-
     arrayRef.current = array;
 
-    const add = useCallback((value: T) => {
-        setArray([...arrayRef.current, value]);
-    }, [setArray]);
+    const actions = useMemo(() => ({
+        add(value: T) {
+            setArray([...arrayRef.current, value]);
+        },
+        remove(index: number) {
+            setArray(arrayRef.current.filter((_, i) => i !== index));
+        },
+        set(index: number, value: T) {
+            setArray(arrayRef.current.map((e, i) => i === index ? value : e));
+        },
+        insert(index: number, value: T) {
+            setArray([...arrayRef.current.slice(0, index), value, ...arrayRef.current.slice(index)]);
+        },
+        splice(startIndex: number, deleteCount: number, replaceWith: T[] = []) {
+            setArray([...arrayRef.current.slice(0, startIndex), ...replaceWith, ...arrayRef.current.slice(startIndex + deleteCount)])
+        },
+    }), [setArray]);
 
-    const remove = useCallback((index: number) => {
-        setArray(arrayRef.current.filter((_, i) => i !== index));
-    }, [setArray]);
-
-    const set = useCallback((index: number, value: T) => {
-        setArray(arrayRef.current.map((e, i) => i === index ? value : e));
-    }, [setArray]);
-
-    const insert = useCallback((index: number, value: T) => {
-        setArray([...arrayRef.current.slice(0, index), value, ...arrayRef.current.slice(index)]);
-    }, [setArray]);
-
-    const splice = useCallback((startIndex: number, deleteCount: number, replaceWith: T[] = []) => {
-        setArray([...arrayRef.current.slice(0, startIndex), ...replaceWith, ...arrayRef.current.slice(startIndex + deleteCount)])
-    }, [setArray])
-
-    const returnedItems = useMemo(() => (
-        { add, remove, set, insert, splice }
-    ), [add, insert, remove, set, splice]);
-
-    return returnedItems;
+    return actions;
 }
 
 export { useArrayState, ArrayOperations };

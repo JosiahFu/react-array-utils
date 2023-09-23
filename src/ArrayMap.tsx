@@ -1,4 +1,4 @@
-import React, { Dispatch, ReactNode, SetStateAction, useCallback } from 'react';
+import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react';
 import { ArrayOperations, useArrayState } from './useArrayState';
 
 interface ChildActions<T> {
@@ -25,52 +25,31 @@ function MapChild<T>({
         arrayActions: ArrayOperations<T>
     ) => ReactNode;
 }) {
-    const { set, remove, insert, splice } = actions;
+    const childActions = useMemo(
+        () => ({
+            set(value: T) {
+                actions.set(index, value);
+            },
 
-    const handleSet = useCallback(
-        (value: T) => {
-            set(index, value);
-        },
-        [index, set]
+            remove() {
+                actions.remove(index);
+            },
+
+            insertBefore(value: T) {
+                actions.insert(index, value);
+            },
+
+            insertAfter(value: T) {
+                actions.insert(index + 1, value);
+            },
+            replace(...values: T[]) {
+                actions.splice(index, 1, values);
+            },
+        }),
+        [actions, index]
     );
 
-    const handleRemove = useCallback(() => {
-        remove(index);
-    }, [index, remove]);
-
-    const handleInsertBefore = useCallback(
-        (value: T) => {
-            insert(index, value);
-        },
-        [index, insert]
-    );
-
-    const handleInsertAfter = useCallback(
-        (value: T) => {
-            insert(index + 1, value);
-        },
-        [index, insert]
-    );
-
-    const handleReplace = useCallback(
-        (...values: T[]) => {
-            splice(index, 1, values);
-        },
-        [index, splice]
-    );
-
-    return children(
-        value,
-        {
-            set: handleSet,
-            remove: handleRemove,
-            insertBefore: handleInsertBefore,
-            insertAfter: handleInsertAfter,
-            replace: handleReplace,
-        },
-        index,
-        actions
-    );
+    return children(value, childActions, index, actions);
 }
 
 type PropsOfType<O extends object, T> = {
