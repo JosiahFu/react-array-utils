@@ -1,4 +1,4 @@
-import React, { Dispatch, ReactNode, SetStateAction, useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { ArrayOperations, useArrayState } from './useArrayState';
 
 interface ChildActions<T> {
@@ -77,7 +77,7 @@ function ArrayMap<
     ...otherProps
 }: {
     array: T[];
-    setArray: Dispatch<SetStateAction<T[]>>;
+    setArray: (array: T[]) => void;
     children: (
         value: T,
         actions: ChildActions<T>,

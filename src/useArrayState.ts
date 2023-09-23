@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 
 interface ArrayOperations<T> {
     add: (value: T) => void,
@@ -15,7 +15,7 @@ interface ArrayOperations<T> {
  * @param setArray - The state setter function.
  * @returns An object containing array manipulation functions.
  */
-function useArrayState<T>(array: T[], setArray: Dispatch<SetStateAction<T[]>>): ArrayOperations<T> {
+function useArrayState<T>(array: T[], setArray: (array: T[]) => void): ArrayOperations<T> {
     const arrayRef = useRef(array);
     arrayRef.current = array;
 
