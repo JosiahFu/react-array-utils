@@ -1,6 +1,6 @@
 {
   "name": "@tater-archives/react-array-utils",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Utilities for handling state arrays in React",
   "type": "module",
   "main": "dist/cjs/index.js",
