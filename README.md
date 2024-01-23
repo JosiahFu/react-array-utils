@@ -34,7 +34,7 @@ shopListActions.insert(2, 'Things');
 
 A component to map each item of an array to content, which recieves several methods relative to the current item.
 
-### API
+### Properties
 
 `ArrayMap` takes `children` in the form of a callback that is called on every
 item of the array in a similar manner to `Array.map()`. It is passed parameters
@@ -48,6 +48,10 @@ to operate on the array:
     - `insertAfter`: Adds a new item after this item
 - `index`: The index of the item in the list
 - `arrayActions`: The same functions returned from `useArrayState`
+- `keys`: An array that should be the same size as `value` which contains the array keys for list render. See [React: Rendering Lists](https://react.dev/learn/rendering-lists) for more information.
+- `keyProp`: Names a property on each item of `value` which should contain its own array key. Mutually exclusive with `keys`.
+
+If neither of `keys` or `keyProp` are specified, it will default to using the array index.
 
 ### Example Usage
 
